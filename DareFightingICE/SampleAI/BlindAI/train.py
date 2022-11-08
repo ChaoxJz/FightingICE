@@ -1,5 +1,6 @@
 import argparse
 import math
+from msilib import sequence
 import time
 import os
 import re
@@ -19,7 +20,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from agent import SoundAgent, CollectDataHelper, SandboxAgent
 from model import RecurrentActor, RecurrentCritic, FeedForwardActor, FeedForwardCritic
-from encoder import SampleEncoder, RawEncoder, FFTEncoder, MelSpecEncoder
+from encoder import SampleEncoder, RawEncoder, FFTEncoder, MelSpecEncoder,TransformerEncoder
 import pickle
 import tqdm
 import pathlib
@@ -40,11 +41,9 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 # logging.basicConfig(format='%(asctime)s %(message)s')
 # torch.set_num_threads(2)
-# TODO use rnn from others/rnnppo.py and check vf loss and entropy losses from others/ppo.py
-# TODO add train part
-TRAINING_ITERATION = 60
+TRAINING_ITERATION = 2
 # GAME_NUM = 1  # 10
-GAME_NUM = 5
+GAME_NUM = 2
 JAVA_GATEWAY_PORT = 4242
 HIDDEN_SIZE = 512
 RECURRENT_LAYERS = 1
@@ -62,18 +61,20 @@ STATE_DIM = {
     1: {
         'conv1d': 160,
         'fft': 512,
-        'mel': 2560
+        'mel': 2560,
+        'trans':512
     },
     4: {
         'conv1d': 64,
         'fft': 512,
-        'mel': 1280
+        'mel': 1280,
+        'trans':512
     }
 }
 GATHER_DEVICE = 'cpu'
 # GATHER_DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 TRAIN_DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-BATCH_LEN = 32
+SEQUENCE_LEN = 32
 TRAIN_EPOCH = 10
 PPO_CLIP = 0.2
 ENTROPY_FACTOR = 0.01
@@ -446,7 +447,7 @@ def train_model(actor, critic, actor_optimizer, critic_optimizer, iteration, por
 
         # log mean_reward
         trajectory_dataset = TrajectoryDataset(trajectories, batch_size=BATCH_SIZE,
-                                               device=TRAIN_DEVICE, batch_len=BATCH_LEN, recurrent=recurrent)
+                                               device=TRAIN_DEVICE, sequence_len=SEQUENCE_LEN, recurrent=recurrent)
         end_gather_time = time.time()
         start_train_time = time.time()
         actor = actor.to(TRAIN_DEVICE)
@@ -629,6 +630,8 @@ def get_sound_encoder(encoder_name, n_frame):
         encoder = FFTEncoder(frame_skip=n_frame)
     elif encoder_name == 'mel':
         encoder = MelSpecEncoder(frame_skip=n_frame)
+    elif encoder_name == 'trans':
+        encoder = TransformerEncoder(frame_skip=n_frame)    
     else:
         encoder = SampleEncoder()
     return encoder
@@ -689,7 +692,7 @@ def load_checkpoint(encoder_name, experiment_id, iteration, rnn):
 if __name__ == '__main__':
     # EXPERIMENT_NAME
     parser = argparse.ArgumentParser()
-    parser.add_argument('--encoder', type=str, choices=['conv1d', 'fft', 'mel'], default='conv1d', help='Choose an encoder for the Blind AI')
+    parser.add_argument('--encoder', type=str, choices=['conv1d', 'fft', 'mel','trans'], default='conv1d', help='Choose an encoder for the Blind AI')
     parser.add_argument('--port', type=int, default=JAVA_GATEWAY_PORT, help='Port used by DareFightingICE')
     parser.add_argument('--id', type=str, required=True, help='Experiment id')
     parser.add_argument('--p2', choices=['Sandbox', 'MctsAi65', 'MctsAi'], type=str, required=True, help='The opponent AI')
