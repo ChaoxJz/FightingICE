@@ -496,70 +496,51 @@ def clones(module, N):
 class TransformerEncoder(BaseEncoder):
     def __init__(self, sampling_rate=48000, fps=60, frame_skip=4):
         super(TransformerEncoder, self).__init__(sampling_rate, fps, frame_skip)
+        self.num_to_subsample = 8
+        self.num_samples = (self.sampling_rate / self.FPS) * self.frame_skip
+        self.num_frequencies = self.num_samples / 2
+        assert int(self.num_samples) == self.num_samples
+        self.num_samples = int(self.num_samples)
+        self.num_frequencies = int(self.num_frequencies)
 
+        self.hamming_window = torch.hamming_window(self.num_samples)
 
-        # add some transformer stuffs here
-        self.input_data = torch.zeros((800,2),dtype=torch.long)
-        # 词表大小是1000/Tensor数量+1
-        self.vocab_size = self.input_data.numel()+1
-        # 词嵌入维度是512维
-        self.d_model = 32
-        #随机抛除系数Dropout
-        self.dropout = 0.12
-        # 句子最大长度
-        self.max_len=self.input_data.shape[1]
-        #掩码张量
-        self.mask = torch.ones(1, 1, self.max_len)
-        #多头注意力机制头数
-        self.head = 2
-        #前馈全连接中间层Neuron
-        self.d_ff = 128
-        #Deepcoopy实例化
-        self.c = copy.deepcopy
-        #实例化Embedding和Positional Coding
-        self.embedding = Embeddings(self.d_model,self.vocab_size)
-        #实例化Positional Coding
-        self.pe = PositionalEncoding(self.d_model, self.dropout)
-        #MultiHeadedAttention实例化
-        self.attn = MultiHeadedAttention(self.head, self.d_model)
-        #前馈全连接层FeedForward实例化
-        self.ff = PositionwiseFeedForward(self.d_model, self.d_ff, self.dropout)
-        #EncoderLayer实例化
-        self.layer = EncoderLayer(self.d_model, self.c(self.attn), self.c(self.ff), self.dropout)
-        # 编码器中编码器层的个数N EncoderLayer个数
-        self.N = 1
-        #Encoder实例化
-        self.Enco = Encoder(self.layer, self.N)
-        #输入x进行Embedding
-        self.input_data=self.embedding(self.input_data)
-        #输入x进行Positional Coding
-        self.input_data = self.pe(self.input_data)
-        #将embeddeddata输入Transformer_Encoder得出结果
-        self.Tfe=self.Enco(self.input_data,self.mask)
-        #finished the transformer_encoder
-        #pass to 2-linear 
-        self.Tfe = torch.flatten(self.Tfe)
+        # Subsampler
+        self.pool = torch.nn.MaxPool1d(self.num_to_subsample)
 
-        # Encoder_linear
-        self.linear1 = torch.nn.Linear(self.Tfe.numel(), 512)
+        # Encoder (small MLP)
+        self.linear1 = torch.nn.Linear(int(self.num_frequencies / self.num_to_subsample), 256)
+        self.linear2 = torch.nn.Linear(256, 256)
+
+    def _torch_1d_fft_magnitude(self, x):
+        """Perform 1D FFT on x with shape (batch_size, num_samples), and return magnitudes"""
+        # Apply hamming window
+        if x.device != self.hamming_window.device:
+            self.hamming_window = self.hamming_window.to(x.device)
+        x = x * self.hamming_window
+        # Add zero imaginery parts
+        x = torch.stack((x, torch.zeros_like(x)), dim=-1)
+        #将input c作为复数张量返回
+        c = torch.view_as_complex(x)
+        ffts = torch.fft.fft(c)
+        ffts = torch.view_as_real(ffts)
+        # Remove mirrored part
+        ffts = ffts[:, :(ffts.shape[1] // 2), :]
+        # To magnitudes
+        mags = torch.sqrt(ffts[..., 0] ** 2 + ffts[..., 1] ** 2)
+        return mags
 
     def encode_single_channel(self, data):
-        # add some transformer stuffs here
-        input_data=torch.from_numpy(100*(data+1)).long()
-        #-------------实例化结束，导入数据-----------------#
-        #输入x进行Embedding
-        input_data=self.embedding(input_data)
-        #输入x进行Positional Coding
-        input_data = self.pe(input_data)
-        #将embeddeddata输入Transformer_Encoder得出结果
-        Transformer_Model_Encoder_data=self.Enco(input_data,mask)
-        #finished the transformer_encoder
-        #pass to 2-linear 
-        Transformer_Model_Encoder_data = torch.flatten(Transformer_Model_Encoder_data)
-        
-        Transformer_Model_Encoder_data = F.relu(self.linear1(Transformer_Model_Encoder_data))
+        """Shape of x: [batch_size, num_samples]"""
+        mags = self._torch_1d_fft_magnitude(data)
+        mags = torch.log(mags + 1e-5)
 
-        return Transformer_Model_Encoder_data
+        # Add and remove "channel" dim...
+        x = self.pool(mags[:, None, :])[:, 0, :]
+        x = F.relu(self.linear1(x))
+        x = F.relu(self.linear2(x))
+        return x
+
 
 
 
