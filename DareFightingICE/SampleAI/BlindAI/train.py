@@ -20,7 +20,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from agent import SoundAgent, CollectDataHelper, SandboxAgent
 from model import RecurrentActor, RecurrentCritic, FeedForwardActor, FeedForwardCritic
-from encoder import SampleEncoder, RawEncoder, FFTEncoder, MelSpecEncoder,TransformerEncoder
+from encoder import SampleEncoder, RawEncoder, FFTEncoder, MelSpecEncoder,TransformerEncoder,NewEncoder
 import pickle
 import tqdm
 import pathlib
@@ -41,9 +41,9 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 # logging.basicConfig(format='%(asctime)s %(message)s')
 # torch.set_num_threads(2)
-TRAINING_ITERATION = 3
+TRAINING_ITERATION = 1
 # GAME_NUM = 1  # 10
-GAME_NUM = 3
+GAME_NUM = 1
 JAVA_GATEWAY_PORT = 4242
 HIDDEN_SIZE = 512
 RECURRENT_LAYERS = 1
@@ -62,13 +62,15 @@ STATE_DIM = {
         'conv1d': 160,
         'fft': 512,
         'mel': 2560,
-        'trans':512
+        'trans':512,
+        'new':512
     },
     4: {
         'conv1d': 64,
         'fft': 512,
         'mel': 1280,
-        'trans':512
+        'trans':512,
+        'new':512
     }
 }
 GATHER_DEVICE = 'cpu'
@@ -632,6 +634,8 @@ def get_sound_encoder(encoder_name, n_frame):
         encoder = MelSpecEncoder(frame_skip=n_frame)
     elif encoder_name == 'trans':
         encoder = TransformerEncoder(frame_skip=n_frame)
+    elif encoder_name == 'new':
+        encoder = NewEncoder(frame_skip=n_frame)
     else:
         encoder = SampleEncoder()
     return encoder
@@ -692,7 +696,7 @@ def load_checkpoint(encoder_name, experiment_id, iteration, rnn):
 if __name__ == '__main__':
     # EXPERIMENT_NAME
     parser = argparse.ArgumentParser()
-    parser.add_argument('--encoder', type=str, choices=['conv1d', 'fft', 'mel','trans'], default='conv1d', help='Choose an encoder for the Blind AI')
+    parser.add_argument('--encoder', type=str, choices=['conv1d', 'fft', 'mel','trans','new'], default='conv1d', help='Choose an encoder for the Blind AI')
     parser.add_argument('--port', type=int, default=JAVA_GATEWAY_PORT, help='Port used by DareFightingICE')
     parser.add_argument('--id', type=str, required=True, help='Experiment id')
     parser.add_argument('--p2', choices=['Sandbox', 'MctsAi65', 'MctsAi'], type=str, required=True, help='The opponent AI')

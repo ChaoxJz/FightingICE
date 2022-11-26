@@ -528,9 +528,9 @@ class TransformerEncoder(BaseEncoder):
         #initialization of input_data let vocab_size to know numbers of data.
         # 词表大小是1000/Tensor数量+1
         #self.vocab_size = self.input_data.numel()+1
-        self.vocab_size = 800
+        self.vocab_size = 1000
         # 词嵌入维度是512维
-        self.d_model = 32
+        self.d_model = 4
         #随机抛除系数Dropout
         self.dropout = 0.12
         # 句子最大长度
@@ -538,9 +538,9 @@ class TransformerEncoder(BaseEncoder):
         #掩码张量
         self.mask = torch.ones(1, 1, self.max_len)
         #多头注意力机制头数
-        self.head = 2
+        self.head = 1
         #前馈全连接中间层Neuron
-        self.d_ff = 128
+        self.d_ff = 32
         #Deepcoopy实例化
         self.c = copy.deepcopy
         #实例化Embedding和Positional Coding
@@ -571,21 +571,24 @@ class TransformerEncoder(BaseEncoder):
         #pass to 2-linear 
         self.flatten = torch.nn.Flatten()
         # Encoder_linear
-        self.linear2 = torch.nn.Linear(25600, 256)
+        self.linear2 = torch.nn.Linear(3200, 256)
 
     def encode_single_channel(self, data):
         # add some transformer stuffs here
         #data=torch.Tensor(data)
-        input_data=(100*(data+1)).long()
+        input_data=(100*((data+2)/3)).long()
+        #print(input_data)
         #token index (0~1500)
         #audio_data is float(-1,1)  ->(0,2)---> (0,200).longtensor data
         #-------------实例化结束，导入数据-----------------#
         #输入x进行Embedding
         x=self.embedding(input_data)
+
         #输入x进行Positional Coding
         x = self.pe(x)
         
         x = F.relu(self.linear2(self.flatten(self.Enco(x,self.mask))))
+        #x = F.relu(self.Enco(x,self.mask))
         #将embeddeddata输入Transformer_Encoder得出结果
         #Transformer_Model_Encoder_data=self.Enco(x,mask)
         #finished the transformer_encoder
@@ -596,8 +599,7 @@ class TransformerEncoder(BaseEncoder):
 
         return x
 
-
-
+        
 if __name__ == '__main__':
     # TODO: compare data value vs pytorch version
     encoder = TransformerEncoder(frame_skip=1)
