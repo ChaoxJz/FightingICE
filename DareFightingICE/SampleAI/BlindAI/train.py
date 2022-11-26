@@ -41,9 +41,9 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 # logging.basicConfig(format='%(asctime)s %(message)s')
 # torch.set_num_threads(2)
-TRAINING_ITERATION = 2
+TRAINING_ITERATION = 3
 # GAME_NUM = 1  # 10
-GAME_NUM = 2
+GAME_NUM = 3
 JAVA_GATEWAY_PORT = 4242
 HIDDEN_SIZE = 512
 RECURRENT_LAYERS = 1
@@ -631,7 +631,7 @@ def get_sound_encoder(encoder_name, n_frame):
     elif encoder_name == 'mel':
         encoder = MelSpecEncoder(frame_skip=n_frame)
     elif encoder_name == 'trans':
-        encoder = TransformerEncoder(frame_skip=n_frame)    
+        encoder = TransformerEncoder(frame_skip=n_frame)
     else:
         encoder = SampleEncoder()
     return encoder

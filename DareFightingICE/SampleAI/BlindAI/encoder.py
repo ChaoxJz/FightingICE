@@ -88,6 +88,32 @@ class RawEncoder(BaseEncoder):
             x = self.pool(x)
         return x
 
+class NewEncoder(BaseEncoder):
+    def __init__(self, sampling_rate=48000, fps=60, frame_skip=4):
+        super(NewEncoder, self).__init__(sampling_rate, fps, frame_skip)
+        self.num_to_subsample = 8
+        self.num_samples = (self.sampling_rate / self.FPS) * self.frame_skip
+        self.num_frequencies = self.num_samples / 2
+        assert int(self.num_samples) == self.num_samples
+        self.num_samples = int(self.num_samples)
+        self.num_frequencies = int(self.num_frequencies)
+
+        # Encoder (small MLP)
+        # self.linear1 = torch.nn.Linear(int(self.num_frequencies / self.num_to_subsample), 256)
+        dim = 800 * frame_skip
+        self.linear1 = torch.nn.Linear(dim, 256)
+        self.linear2 = torch.nn.Linear(256, 256)
+        self.flatten = torch.nn.Flatten()
+
+    def encode_single_channel(self, data):
+        #raw_audio = np.random.rand(1,800,2)
+
+        # Add and remove "channel" dim...
+        x = F.relu(self.linear1(self.flatten(data)))
+        x = F.relu(self.linear2(x))
+        return x
+
+
 
 class MelSpecEncoder(BaseEncoder):
     def __init__(self, sampling_rate=48000, fps=60, frame_skip=4):
@@ -496,18 +522,19 @@ def clones(module, N):
 class TransformerEncoder(BaseEncoder):
     def __init__(self, sampling_rate=48000, fps=60, frame_skip=4):
         super(TransformerEncoder, self).__init__(sampling_rate, fps, frame_skip)
-
-
+        
         # add some transformer stuffs here
-        self.input_data = torch.zeros((800,2),dtype=torch.long)
+        #self.input_data = torch.zeros((1,800,2),dtype=torch.long) #vocab_size=1*800*2 + 1
+        #initialization of input_data let vocab_size to know numbers of data.
         # 词表大小是1000/Tensor数量+1
-        self.vocab_size = self.input_data.numel()+1
+        #self.vocab_size = self.input_data.numel()+1
+        self.vocab_size = 800
         # 词嵌入维度是512维
         self.d_model = 32
         #随机抛除系数Dropout
         self.dropout = 0.12
         # 句子最大长度
-        self.max_len=self.input_data.shape[1]
+        self.max_len=800
         #掩码张量
         self.mask = torch.ones(1, 1, self.max_len)
         #多头注意力机制头数
@@ -530,44 +557,56 @@ class TransformerEncoder(BaseEncoder):
         self.N = 1
         #Encoder实例化
         self.Enco = Encoder(self.layer, self.N)
+        
+        '''
         #输入x进行Embedding
         self.input_data=self.embedding(self.input_data)
         #输入x进行Positional Coding
         self.input_data = self.pe(self.input_data)
         #将embeddeddata输入Transformer_Encoder得出结果
         self.Tfe=self.Enco(self.input_data,self.mask)
+        '''
+        
         #finished the transformer_encoder
         #pass to 2-linear 
-        self.Tfe = torch.flatten(self.Tfe)
-
+        self.flatten = torch.nn.Flatten()
         # Encoder_linear
-        self.linear1 = torch.nn.Linear(self.Tfe.numel(), 512)
+        self.linear2 = torch.nn.Linear(25600, 256)
 
     def encode_single_channel(self, data):
         # add some transformer stuffs here
-        input_data=torch.from_numpy(100*(data+1)).long()
+        #data=torch.Tensor(data)
+        input_data=(100*(data+1)).long()
+        #token index (0~1500)
+        #audio_data is float(-1,1)  ->(0,2)---> (0,200).longtensor data
         #-------------实例化结束，导入数据-----------------#
         #输入x进行Embedding
-        input_data=self.embedding(input_data)
+        x=self.embedding(input_data)
         #输入x进行Positional Coding
-        input_data = self.pe(input_data)
+        x = self.pe(x)
+        
+        x = F.relu(self.linear2(self.flatten(self.Enco(x,self.mask))))
         #将embeddeddata输入Transformer_Encoder得出结果
-        Transformer_Model_Encoder_data=self.Enco(input_data,mask)
+        #Transformer_Model_Encoder_data=self.Enco(x,mask)
         #finished the transformer_encoder
         #pass to 2-linear 
-        Transformer_Model_Encoder_data = torch.flatten(Transformer_Model_Encoder_data)
+        #Transformer_Model_Encoder_data = torch.flatten(Transformer_Model_Encoder_data)
         
-        Transformer_Model_Encoder_data = F.relu(self.linear1(Transformer_Model_Encoder_data))
+        #Transformer_Model_Encoder_data = F.relu(self.linear1(Transformer_Model_Encoder_data))
 
-        return Transformer_Model_Encoder_data
+        return x
 
 
 
 if __name__ == '__main__':
     # TODO: compare data value vs pytorch version
-    encoder = FFTEncoder()
-    import numpy as np
+    encoder = TransformerEncoder(frame_skip=1)
     np.random.seed(0)
     # 这是一个1*3200*2的三维数据
-    #data = np.random.randn(1, 3200, 2)
+    #raw_audio = np.random.rand(1,800,2) 
+    data = np.random.rand(1,800,2)
+    #a=encoder(data)
+    print(encoder(data).shape)
+
+    
 
