@@ -46,3 +46,5 @@ encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
 
 
 
+### Reproduce the trained ai of Blind-T ###
+#### 1 ####
