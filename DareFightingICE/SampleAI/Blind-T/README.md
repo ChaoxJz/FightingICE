@@ -37,20 +37,13 @@ encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
 - Run ```trained_ai/PvJ.py``` to begin testing.
 - After testing, please run ```analyze_fight_result.py```. Both win ratio and average HP difference will be printed out.
 ## Tested Environment
-- Intel(R) Xeon(R) W-2135 CPU @ 3.70GHz   3.70 GHz
-- 16.0 GB RAM
-- NVIDIA Quadro P1000 GPU
-- Windows 10 Pro
-- Python 3.8
-- DareFightingICE 5.2 (from the project's Github)
-
 - OS：Windows 10 professional
 - ハードディスク
 	- GPU：NVIDIA GeForce GTX 1080 8GBytes
 	- CPU：Intel Core i7-6950X @ 3.00GHz
 	- メモリ：128 GBytes DDR4
 	- マザーボード：ASUS X99-E WS
-- ゲーム：DareFightingICE [13]
+- ゲーム：DareFightingICE 5.2 (from the project's Github)
 - CUDA 12.0.89
 - CUDA Toolkit
 - Condaの環境 
