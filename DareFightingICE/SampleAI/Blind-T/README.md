@@ -1,4 +1,4 @@
-# Deep Reinforcement Learning Blind AI
+# Deep Reinforcement Learning Blind-T
 
 This page contains the source code and model of our deep reinforcement learning blind AI (Blind AI), the details of which are given in this [paper](https://arxiv.org/abs/2205.07444).
 
