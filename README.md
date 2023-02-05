@@ -46,7 +46,4 @@ encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
 
 
 
-### Reproduce the trained ai of Blind-T ###
-#### 1.All of data in [this page](https://github.com/ChaoxJz/FightingICE/tree/master/DareFightingICE/SampleAI/Blind-T). ####
 
-#### 2.The trained ai model in FightingICE/tree/master/DareFightingICE/SampleAI/Blind-T/last_trained_model, and also in FightingICE/tree/master/DareFightingICE/SampleAI/Blind-T/ppo_pytorch/ppo_pytorch/checkpoints/trans/rnn/rnn_1_frame_256_mctsai/0 . ####
