@@ -1,21 +1,24 @@
 # Deep Reinforcement Learning Blind-T
 
-This page contains the source code and model of our deep reinforcement learning blind AI (Blind AI), the details of which are given in this [paper](https://arxiv.org/abs/2205.07444).
+This is a ai use BlindAI's architecture , but the part of getting audio features which use deeplearning network with Transformer 
+encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
+
+<font color="red">For the information on the competition from 2022, please see [this page](https://github.com/ChaoxJz/FightingICE/tree/master/DareFightingICE/SampleAI/Blind-T/paper).</font>
 
 ## Installation:
 - Install miniconda for python 3.8: https://docs.conda.io/en/latest/miniconda.html.
-- Clone the repo: `git clone https://github.com/TeamFightingICE/FightingICE`.
+- Clone the repo: `git clone https://github.com/ChaoxJz/FightingICE
 - Create and activate conda env:
   
     ```
-    cd DareFightingICE/DareFightingICE/SampleAI/BlindAI
+    cd DareFightingICE/DareFightingICE/SampleAI/Blind-T
     conda env create -f environment.yml
     conda activate ice
     ```
 
 - Merge all the java files under ```non_delay``` with the source code of DareFightingICE under ```src/aiinterface```.
 - Boot DareFightingICE with the option "--py4j --limithp 400 400".
-- Run the ```train.py``` file to train. e.g ```python torch_train.py --p2 MctsAi65 --encoder fft --id rnn_1_frame_256_mctsai65 --n_frame 1 --recurrent``` or
+- Run the ```train.py``` file to train. e.g ```python torch_train.py --p2 MctsAi65 --encoder trans --id rnn_1_frame_256_mctsai65 --n_frame 1 --recurrent``` or
 - Run the ```trained_ai/PvJ.py``` to test the Blind AI.
 
 ## File Description
@@ -40,6 +43,25 @@ This page contains the source code and model of our deep reinforcement learning 
 - Windows 10 Pro
 - Python 3.8
 - DareFightingICE 5.2 (from the project's Github)
+
+- OS：Windows 10 professional
+- ハードディスク
+	- GPU：NVIDIA GeForce GTX 1080 8GBytes
+	- CPU：Intel Core i7-6950X @ 3.00GHz
+	- メモリ：128 GBytes DDR4
+	- マザーボード：ASUS X99-E WS
+- ゲーム：DareFightingICE [13]
+- CUDA 12.0.89
+- CUDA Toolkit
+- Condaの環境 
+	- Python 3.8.13
+	- ライブラリ
+		- environment.yml[13]
+		- altair
+		- spacy
+		- GPUtil
+		- warnings
+
 
 ## Deep learning libraries in use:
 - pytorch 1.11.0
