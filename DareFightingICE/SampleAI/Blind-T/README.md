@@ -49,14 +49,11 @@ encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
 - Condaの環境 
 	- Python 3.8.13
 	- ライブラリ
-		- environment.yml[13]
 		- altair
 		- spacy
 		- GPUtil
 		- warnings
+		- pytorch 1.11.0
+		- torchaudio 0.11.0
+		- torchvision 0.12.0
 
-
-## Deep learning libraries in use:
-- pytorch 1.11.0
-- torchaudio 0.11.0
-- torchvision 0.12.0
