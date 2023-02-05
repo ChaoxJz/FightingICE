@@ -27,4 +27,5 @@ FightingICEはComputational Intelligence and Games (CIG)公認の格闘ゲーム
 FightingICE公式サイトを参照してください。  
 <http://www.ice.ci.ritsumei.ac.jp/~ftgaic/index.htm><br>
 
+# FightingICE #
 
