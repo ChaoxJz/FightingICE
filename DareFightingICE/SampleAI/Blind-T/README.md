@@ -5,7 +5,7 @@ encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
 
 <font color="red">For the information on the competition from 2022, please see [this page](https://github.com/ChaoxJz/FightingICE/tree/master/DareFightingICE/SampleAI/Blind-T/paper).</font>
 
-\n\n
+
 ## Installation:
 - Install miniconda for python 3.8: https://docs.conda.io/en/latest/miniconda.html.
 - Clone the repo: `git clone https://github.com/ChaoxJz/FightingICE
@@ -22,7 +22,7 @@ encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
 - Run the ```train.py``` file to train. e.g ```python torch_train.py --p2 MctsAi65 --encoder trans --id rnn_1_frame_256_mctsai65 --n_frame 1 --recurrent``` or
 - Run the ```trained_ai/PvJ.py``` to test the Blind AI.
 
-\n\n
+
 
 ## Reproduce the trained ai of Blind-T ##
 #### 1.All of data in this folder. ####
@@ -40,7 +40,6 @@ conda activate ice
 python PvJ.py
 ```
 ####
-\n\n
 
 ## File Description
 - ```train.py``` is a file used to train Blind AI. Please run ```python train.py -h``` for our explanation of the parameters.
@@ -49,7 +48,7 @@ python PvJ.py
 - ```visualize.py``` is used to visualize the learning curve and calculate the area under the learning curve.
 - ```analyze_fight_result.py``` is used to calculate the win ratio and average HP difference between Blind AI and MctsAi65.
 
-\n\n
+
 
 ## Get sound design evaluation metrics
 - After finishing your sound design, please run the following command to train Blind AI:
@@ -60,7 +59,6 @@ python PvJ.py
 - Run ```trained_ai/PvJ.py``` to begin testing.
 - After testing, please run ```analyze_fight_result.py```. Both win ratio and average HP difference will be printed out.
 
-\n\n
 
 ## Tested Environment
 - OS：Windows 10 professional
