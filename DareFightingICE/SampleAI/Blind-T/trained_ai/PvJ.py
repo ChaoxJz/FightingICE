@@ -20,9 +20,9 @@ def start_game(Character):
             manager = gateway.entry_point
             ai_name = 'FFTGRU'
             #manager.registerAI(ai_name, SoundAgent(gateway,logger=logger, encoder='trans', path='E:\\DareFightingICE\\FightingICE\\DareFightingICE\\SampleAI\\BlindAI\\ppo_pytorch\\checkpoints\\fft\\rnn\\rnn_1_frame_256_mctsai\\166', rnn=True,device="cuda:0"))
-            manager.registerAI(ai_name, SoundAgent(gateway,logger=logger, encoder='trans', path='E:\\DareFightingICE\\FightingICE\\DareFightingICE\\SampleAI\\BlindAI\\ppo_pytorch\\checkpoints\\trans\\rnn\\rnn_1_frame_256_mctsai\\0', rnn=True,device="cuda:0"))
+            manager.registerAI(ai_name, SoundAgent(gateway,logger=logger, encoder='trans', path='E:\\test\\FightingICE-master\\DareFightingICE\\SampleAI\\Blind-T\\ppo_pytorch\\checkpoints\\trans\\rnn\\rnn_1_frame_256_mctsai\\0', rnn=True,device="cuda:0"))
             print("Start game")
-            game = manager.createGame(Chara, Chara, ai_name, "MctsAi65", GAME_NUM)
+            game = manager.createGame(Chara, Chara, ai_name, "MctsAi", GAME_NUM)
             manager.runGame(game)
             print("After game")
             sys.stdout.flush()
