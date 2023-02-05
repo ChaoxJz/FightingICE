@@ -5,6 +5,7 @@ encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
 
 <font color="red">For the information on the competition from 2022, please see [this page](https://github.com/ChaoxJz/FightingICE/tree/master/DareFightingICE/SampleAI/Blind-T/paper).</font>
 
+
 ## Installation:
 - Install miniconda for python 3.8: https://docs.conda.io/en/latest/miniconda.html.
 - Clone the repo: `git clone https://github.com/ChaoxJz/FightingICE
@@ -21,10 +22,13 @@ encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
 - Run the ```train.py``` file to train. e.g ```python torch_train.py --p2 MctsAi65 --encoder trans --id rnn_1_frame_256_mctsai65 --n_frame 1 --recurrent``` or
 - Run the ```trained_ai/PvJ.py``` to test the Blind AI.
 
+
+
 ## Reproduce the trained ai of Blind-T ##
 #### 1.All of data in this folder. ####
 
 #### 2.The trained ai model in FightingICE/tree/master/DareFightingICE/SampleAI/Blind-T/last_trained_model, and also in FightingICE/tree/master/DareFightingICE/SampleAI/Blind-T/ppo_pytorch/ppo_pytorch/checkpoints/trans/rnn/rnn_1_frame_256_mctsai/0 . ####
+
 
 
 ## File Description
@@ -34,6 +38,8 @@ encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
 - ```visualize.py``` is used to visualize the learning curve and calculate the area under the learning curve.
 - ```analyze_fight_result.py``` is used to calculate the win ratio and average HP difference between Blind AI and MctsAi65.
 
+
+
 ## Get sound design evaluation metrics
 - After finishing your sound design, please run the following command to train Blind AI:
   ```python torch_train.py --p2 MctsAi65 --encoder fft --id {experiment_id} --n_frame 1 --recurrent```, where you can decide ```experiment_id``` on your own
@@ -42,6 +48,8 @@ encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
 - Please revise the ```path``` parameter of the Blind AI in line number 22 of ```trained_ai/PvJ.py``` to your trained model location.
 - Run ```trained_ai/PvJ.py``` to begin testing.
 - After testing, please run ```analyze_fight_result.py```. Both win ratio and average HP difference will be printed out.
+
+
 ## Tested Environment
 - OS：Windows 10 professional
 - ハードディスク
