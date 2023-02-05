@@ -27,5 +27,23 @@ FightingICEはComputational Intelligence and Games (CIG)公認の格闘ゲーム
 FightingICE公式サイトを参照してください。  
 <http://www.ice.ci.ritsumei.ac.jp/~ftgaic/index.htm>
 
-# FightingICE #
+
+
+
+
+
+# DareFightingICE #
+
+You can open the file "FightingICE_nonDelay_play.bat" to try to play the game.And use 
+"FightingICE_nonDelay_pybot.bat" to train your ai for nodelay.
+(press key "z" to Confirm, and use "z","x","c" attack, "space" jump , and "↑","↓","←","→" to control the character to move.)
+
+# About the Blind-T #
+This is a ai use BlindAI's architecture , but the part of getting audio features which use deeplearning network with Transformer 
+encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
+
+<font color="red">For the information on Blind-T, please see [this page]
+(https://github.com/ChaoxJz/FightingICE/tree/master/DareFightingICE/SampleAI/Blind-T/paper).</font>
+
+
 
