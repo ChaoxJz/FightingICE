@@ -42,7 +42,7 @@ You can open the file "FightingICE_nonDelay_play.bat" to try to play the game.An
 This is a ai use BlindAI's architecture , but the part of getting audio features which use deeplearning network with Transformer 
 encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
 
-<font color="red">For the information on the competition from 2022, please see [this page](https://github.com/TeamFightingICE/FightingICE/tree/master/DareFightingICE).</font>
+<font color="red">For the information on the competition from 2022, please see [this page](https://github.com/ChaoxJz/FightingICE/tree/master/DareFightingICE/SampleAI/Blind-T/paper).</font>
 
 
 
