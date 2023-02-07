@@ -3,7 +3,9 @@
 This is a ai use BlindAI's architecture , but the part of getting audio features which use deeplearning network with Transformer 
 encoder.(BlindAI use 1D-CNN/FFT/Mel-spectrogram to build the encoder.)
 
-<font color="red">For the information on the competition from 2022, please see [this page](https://github.com/ChaoxJz/FightingICE/tree/master/DareFightingICE/SampleAI/Blind-T/paper).</font>
+<font color="red">The Blind-T project link [this page](https://github.com/ChaoxJz/FightingICE).</font>
+
+<font color="red">For the information about Blind-T reference, please see [this page](https://github.com/ChaoxJz/FightingICE/tree/master/DareFightingICE/SampleAI/Blind-T/paper).</font>
 
 
 ## Installation:
